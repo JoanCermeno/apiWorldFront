@@ -1,4 +1,21 @@
 <script setup>
+//pedir datos mediante fetch
+async function pedirData(url, options = {}) {
+  try {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
+
 const listPais = ["venezuela", "Esp", "uruguay", "canada"];
 const listEstados = ["guarico", "portuguesa", "barinas"];
 const listCiudades = ["guanare", "merida", "guanarito"];
