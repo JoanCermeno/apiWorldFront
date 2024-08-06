@@ -2,14 +2,23 @@
 import { ref } from "vue";
 
 let menuIsVisible = ref(false);
+
+window.addEventListener("resize", () => {
+  //si la ventana es igual o mayor a lg mostrar el menu pantalla completa
+  if (window.innerWidth >= 1024) {
+    menuIsVisible.value = false;
+  } else {
+    menuIsVisible.value = true;
+  }
+});
 </script>
 
 <template>
   <header
-    class="sticky top-4 w-[90%] dark:bg-[rgba(1,65,129,0.25)] dark:shadow-lg dark:backdrop-blur-md dark:rounded dark:border dark:border-gray-200 mx-auto z-10 py-2 px-4 flex lg:flex-row flex-col justify-between align-items-center lg:align-items-start bg-[rgba(250,249,249,0.804)] shadow-lg backdrop-blur-md rounded border border-gray-200"
+    class="sticky top-8 w-[90%] dark:shadow-lg dark:backdrop-blur-md dark:rounded dark:border mx-auto z-10 py-2 px-4 flex lg:flex-row flex-col justify-between align-items-center lg:align-items-start bg-[#fff] shadow-lg backdrop-blur-md rounded-lg border"
   >
-    <section class="text-2xl">
-      <span class="texto-con-degradado">{ API Wolrd }</span> 🌎
+    <section class="text-2xl flex gap-2 items-center">
+      <span class="texto-con-degradado">{ API World }</span> 🌎
     </section>
     <!-- section con los enlaces de interes  -->
 
@@ -18,7 +27,7 @@ let menuIsVisible = ref(false);
       :class="{ ocultar: menuIsVisible }"
     >
       <ul
-        class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-2 p-2"
+        class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-6 p-2"
       >
         <!-- Aplicamos Flexbox y centramos el contenido dentro de cada <li> -->
         <li class="flex items-center justify-center">About</li>
@@ -77,8 +86,9 @@ let menuIsVisible = ref(false);
 li {
   position: relative;
   user-select: none;
-
+  color: #000;
   cursor: pointer;
+  font-size: large;
 }
 li::after {
   content: "";
@@ -87,7 +97,7 @@ li::after {
   height: 2px;
   bottom: 0px;
   transition: 0.2s ease-out width;
-  background-color: white;
+  background-color: #000;
 }
 li:hover::after {
   width: 100%;
@@ -95,7 +105,7 @@ li:hover::after {
 /* transiion del menu */
 
 nav {
-  transition: all 1s linear;
+  transition: all 0.2s linear;
   max-height: 200px;
   max-width: 100%;
   overflow: hidden;
@@ -105,6 +115,6 @@ nav {
   overflow: hidden;
   max-height: 0px;
 
-  transition: all 2s;
+  transition: all 0.5s;
 }
 </style>
