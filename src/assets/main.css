@@ -8,6 +8,9 @@
     /* background-color: #21d4fd;
     background-image: linear-gradient(19deg, #21d4fd 0%, #f800eb 100%); */
     min-height: 100vh;
-    background-color: #1b1f3c;
+    background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+    background-size: 200% 100%; /* Asegúrate de que el tamaño del fondo sea mayor */
+    animation: moverFondo 10s infinite; /* Define la animación */
+    animation-direction: alternate;
   }
 }

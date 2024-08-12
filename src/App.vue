@@ -5,7 +5,7 @@ import HeaderPrincipal from "./components/header.vue";
 
 <template>
   <HeaderPrincipal></HeaderPrincipal>
-  <main class="relative top-5">
+  <main class="relative pt-[5%]">
     <RouterView></RouterView>
   </main>
 </template>

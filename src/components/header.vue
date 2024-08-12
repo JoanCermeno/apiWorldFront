@@ -15,7 +15,7 @@ window.addEventListener("resize", () => {
 
 <template>
   <header
-    class="sticky top-8 w-[90%] dark:shadow-lg dark:backdrop-blur-md dark:rounded dark:border mx-auto z-10 py-2 px-4 flex lg:flex-row flex-col justify-between align-items-center lg:align-items-start bg-[#fff] shadow-lg backdrop-blur-md rounded-lg border"
+    class="fixed top-5 left-[5%] w-[90%] z-10 py-2 px-4 flex lg:flex-row flex-col justify-between align-items-center lg:align-items-start fondo"
   >
     <section class="text-2xl flex gap-2 items-center">
       <span class="texto-con-degradado">{ API World }</span> 🌎
@@ -82,11 +82,19 @@ window.addEventListener("resize", () => {
     background-position: 10%;
   }
 }
+.fondo {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(12.5px);
+  -webkit-backdrop-filter: blur(12.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
 
 li {
   position: relative;
   user-select: none;
-  color: #000;
+  color: #ddd;
   cursor: pointer;
   font-size: large;
 }
@@ -97,7 +105,8 @@ li::after {
   height: 2px;
   bottom: 0px;
   transition: 0.2s ease-out width;
-  background-color: #000;
+  background-color: #00cdb7;
+  border-radius: 2px;
 }
 li:hover::after {
   width: 100%;
