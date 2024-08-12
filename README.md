@@ -1,41 +1,38 @@
-# frontApiWorld
+# FrontAPIWorld
 
-This template should help get you started developing with Vue 3 in Vite.
+**FrontAPIWorld** es un proyecto de demostración que permite realizar consultas a una API para obtener datos demográficos detallados de cualquier parte del mundo. A través de esta API, puedes obtener información sobre:
 
-## Recommended IDE Setup
+- **Países**: Todos los países del mundo.
+- **Regiones o Estados**: Todas las regiones o estados de un país específico.
+- **Ciudades**: Las ciudades dentro de una región o estado, incluyendo la latitud y longitud precisa de cada ciudad.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Características
 
-## Customize configuration
+- **Acceso Rápido y Sencillo**: Obtén datos demográficos de manera fácil y sin complicaciones.
+- **Datos Geográficos Precisos**: Incluye coordenadas geográficas para ciudades, lo que permite integraciones con mapas u otras aplicaciones geoespaciales.
+- **100% Gratuito**: Este servicio es completamente gratuito, ideal para desarrolladores que necesiten datos demográficos para sus aplicaciones.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Estado del Proyecto
 
-## Project Setup
+Actualmente, **FrontAPIWorld** está en una **fase de desarrollo muy temprana**. Estoy reescribiendo todo el proyecto utilizando **Vue.js** para el frontend y **Fastify** para la API backend. La versión anterior del proyecto no estaba bien optimizada, por lo que esta nueva implementación busca mejorar el rendimiento y la usabilidad.
 
-```sh
-npm install
-```
+## Tecnologías Utilizadas
 
-### Compile and Hot-Reload for Development
+- **Frontend**: [Vue.js](https://vuejs.org/)
+- **Backend**: [Fastify](https://www.fastify.io/)
 
-```sh
-npm run dev
-```
+## Instalación y Uso
 
-### Compile and Minify for Production
+proximamente
 
-```sh
-npm run build
-```
+## Contribuciones
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+Dado que el proyecto está en una fase inicial, cualquier sugerencia, reporte de bugs o contribución es más que bienvenida. ¡Siéntete libre de abrir un issue o un pull request!
 
-```sh
-npm run test:unit
-```
+## Licencia
 
-### Lint with [ESLint](https://eslint.org/)
+Este proyecto está bajo la [MIT License](./LICENSE).
 
-```sh
-npm run lint
-```
+---
+
+**FrontAPIWorld** es una demostración en continuo desarrollo, y estoy emocionado de compartir futuras actualizaciones. ¡Gracias por tu interés! JOAN CERMEÑO Ing De Sistema 🇻🇪👨🏻‍💻
