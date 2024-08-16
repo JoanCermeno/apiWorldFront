@@ -1,15 +1,17 @@
 <script setup>
 import { ref, onMounted } from "vue";
-
-const loadding = ref(true);
+import Swal from "sweetalert2";
+const apiURL = import.meta.env.VITE_API_URL;
 const listPais = ref([]);
 const listEstados = ref([]);
 const listCiudades = ref([]);
 const selectedPais = ref("");
 const estadoSelected = ref("");
-const ciudadSelected = ref([]);
+const ciudadSelected = ref("");
+const loaddingPais = ref(true);
+const loaddingEstado = ref(false);
+const loaddingCiudad = ref(false);
 
-//pedir datos mediante fetch
 async function pedirData(url, options = {}) {
   try {
     const response = await fetch(url, options);
@@ -25,8 +27,6 @@ async function pedirData(url, options = {}) {
     throw error;
   }
 }
-//disparador de alertas Sweetalert2
-import Swal from "sweetalert2";
 
 function mostarAlerta(title) {
   const Toast = Swal.mixin({
@@ -50,55 +50,63 @@ function mostarAlerta(title) {
 
 onMounted(async () => {
   try {
-    listPais.value = await pedirData("http://localhost:6969/pais");
+    listPais.value = await pedirData(`${apiURL}/pais`);
   } catch (error) {
     mostarAlerta("Ocurrio un problema al mostrar los paises.");
-
     console.error("Failed to fetch pais:", error);
   } finally {
-    loadding.value = false;
+    loaddingPais.value = false;
   }
 });
 
 // Cargar estados al formulario
 async function traerEstadosDelPais(id_pais) {
-  listEstados.value = await pedirData(
-    `http://localhost:6969/estado?id_pais=${id_pais}`
-  );
+  listEstados.value = await pedirData(`${apiURL}/estado?id_pais=${id_pais}`);
+  loaddingEstado.value = false;
 }
 
-function handleChange(event) {
+function changePais(event) {
+  //vaciamos todos los demas inputs
+  console.log(`input pais canbio limpiando inputs`);
+  estadoSelected.value = "";
+  ciudadSelected.value = "";
+
   const infoPaisSelected = listPais.value.find(
     (pais) => pais.name === event.target.value
   );
   traerEstadosDelPais(infoPaisSelected.id);
+  loaddingEstado.value = true;
 }
-
-// cargar ciudades
-async function traerCiudades(id_estado) {
-  listCiudades.value = await pedirData(
-    `http://localhost:6969/ciudad?id_estado=${id_estado}`
-  );
-  console.log(listCiudades.value);
-}
-
 function cambioInputEstado(event) {
-  console.log("Cmabio el imput estado");
+  console.log("se actualiz el imput estado");
   const infoEstadoSelected = listEstados.value.find(
     (estado) => estado.name === event.target.value
   );
-  traerCiudades(infoEstadoSelected.id);
+  traerCiudades(infoEstadoSelected.country_id, infoEstadoSelected.id);
+  loaddingCiudad.value = true;
+}
+
+// cargar ciudades
+async function traerCiudades(pais_id, estado_id) {
+  listCiudades.value = await pedirData(
+    `${apiURL}/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`
+  );
+  loaddingCiudad.value = false;
 }
 </script>
 
 <template>
-  <section class="formBackground p-5 rounded w-[90%] mx-auto">
+  <section class="formBackground p-5 rounded w-[90%] mx-auto max-w-lg">
     <h2 class="text-center text-4xl mb-2">Demo</h2>
     <form action="#" method="get">
-      <div v-if="loadding">Cargando...</div>
-
       <div class="container">
-        <label for="pais" class="text-sm font-medium leading-6">Pais</label>
+        <label for="pais" class="text-sm font-medium leading-6"
+          >Pais
+          <span
+            v-if="loaddingPais"
+            class="loading loading-ring loading-lg absolute left-12"
+          ></span>
+        </label>
         <input
           type="text"
           id="pais-input"
@@ -108,10 +116,10 @@ function cambioInputEstado(event) {
           class="p-2 rounded border w-full"
           autocomplete="off"
           v-model="selectedPais"
-          @change="handleChange"
+          @change="changePais"
         />
 
-        <datalist v-if="!loadding" id="pais">
+        <datalist v-if="!loaddingPais" id="pais">
           <option
             v-for="(pais, index) in listPais"
             :key="pais.id"
@@ -120,11 +128,17 @@ function cambioInputEstado(event) {
             {{ pais.name }}
           </option>
         </datalist>
-        <p>Seleccionado: {{ selectedPais }}</p>
+        <p>{{ selectedPais }}</p>
       </div>
 
       <div class="container">
-        <label for="estado" class="text-sm font-medium leading-6">Estado</label>
+        <label for="estado" class="text-sm font-medium leading-6"
+          >Estado
+          <span
+            v-if="loaddingEstado"
+            class="loading loading-ring loading-lg absolute left-12"
+          ></span>
+        </label>
         <input
           type="text"
           id="estado-input"
@@ -144,11 +158,18 @@ function cambioInputEstado(event) {
             {{ estado.name }}
           </option>
         </datalist>
-        <p>Seleccionado: {{ estadoSelected }}</p>
+        <p>{{ estadoSelected }}</p>
       </div>
 
       <div class="container">
-        <label for="ciudad" class="text-sm font-medium leading-6">Ciudad</label>
+        <label for="ciudad" class="text-sm font-medium leading-6"
+          >Ciudad
+
+          <span
+            v-if="loaddingCiudad"
+            class="loading loading-infinity loading-md absolute left-16"
+          ></span>
+        </label>
         <input
           type="text"
           id="ciudad-input"
@@ -156,6 +177,7 @@ function cambioInputEstado(event) {
           placeholder="buscar ciudad"
           autocomplete="off"
           class="w-full p-2 rounded border"
+          v-model="ciudadSelected"
         />
         <datalist id="ciudad">
           <option
@@ -166,16 +188,15 @@ function cambioInputEstado(event) {
             {{ ciudad.name }}
           </option>
         </datalist>
+        <p>{{ ciudadSelected }}</p>
       </div>
 
       <!-- estart button send -->
       <div class="containerButton container">
-        <button type="submit" class="btn btn-block btn-accent">
+        <button type="submit" class="btn btn-block btn-neutral">
           Consultar Info
         </button>
       </div>
-
-      <small>Vamos por mas!</small>
     </form>
   </section>
 </template>
@@ -189,7 +210,7 @@ function cambioInputEstado(event) {
 input {
   margin-top: 0.5rem;
   color: darkblue;
-  background-color: #fff;
+  background-color: #e5e5e5;
 }
 
 .formBackground {

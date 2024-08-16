@@ -3,7 +3,9 @@ import mainForm from "./mainForm.vue";
 </script>
 
 <template>
-  <section class="container mx-auto flex flex-col gap-4 py-4 w-[90%] my-12">
+  <section
+    class="container mx-auto flex flex-col gap-4 py-4 w-[90%] my-12 max-w-4xl"
+  >
     <h1 class="text-5xl font-bold text-center text-white">
       Welcome to { API World } 🌎
     </h1>

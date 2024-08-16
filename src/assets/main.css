@@ -8,9 +8,20 @@
     /* background-color: #21d4fd;
     background-image: linear-gradient(19deg, #21d4fd 0%, #f800eb 100%); */
     min-height: 100vh;
-    background-image: linear-gradient(-20deg, #2b5876 0%, #4e4376 100%);
+    background-image: linear-gradient(-5deg, #2b5876 0%, #4e4376 100%);
     background-size: 200% 100%; /* Asegúrate de que el tamaño del fondo sea mayor */
-    animation: moverFondo 10s infinite; /* Define la animación */
+    animation: colorear 10s infinite; /* Define la animación */
     animation-direction: alternate;
+  }
+  @keyframes colorear {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 400%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
