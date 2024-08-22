@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import Swal from "sweetalert2";
+// Importa `defineEmits` para emitir eventos al componente padre
+const emit = defineEmits(["mostrar-mapa"]); // Lista de eventos que el componente emitirá
+
 const apiURL = import.meta.env.VITE_API_URL;
 const listPais = ref([]);
 const listEstados = ref([]);
@@ -92,6 +95,12 @@ async function traerCiudades(pais_id, estado_id) {
     `${apiURL}/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`
   );
   loaddingCiudad.value = false;
+}
+
+function emitirMostrarMapa(e) {
+  e.preventDefault();
+  console.log("Evento mostrar map disparado!");
+  emit("mostrar-mapa");
 }
 </script>
 
@@ -193,7 +202,11 @@ async function traerCiudades(pais_id, estado_id) {
 
       <!-- estart button send -->
       <div class="containerButton container">
-        <button type="submit" class="btn btn-block btn-neutral">
+        <button
+          type="submit"
+          class="btn btn-block btn-neutral"
+          @click="emitirMostrarMapa"
+        >
           Consultar Info
         </button>
       </div>

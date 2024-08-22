@@ -1,5 +1,13 @@
 <script setup>
+import { ref } from "vue";
+import mapComponent from "./Lmap.vue";
 import mainForm from "./mainForm.vue";
+const hiddenMap = ref(true);
+
+const showMap = () => {
+  console.log("PADRE ACTIVADO");
+  hiddenMap.value = false;
+};
 </script>
 
 <template>
@@ -16,7 +24,11 @@ import mainForm from "./mainForm.vue";
       <b>Joan Cermeño</b> y <b>Luis Viera</b> 🇻🇪
     </p>
   </section>
-  <mainForm></mainForm>
+  <mainForm @mostrar-mapa="showMap"></mainForm>
+
+  <section id="container-map" v-if="!hiddenMap">
+    <mapComponent></mapComponent>
+  </section>
 </template>
 
 <style scoped></style>
