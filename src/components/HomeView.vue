@@ -2,10 +2,16 @@
 import { ref } from "vue";
 import mapComponent from "./Lmap.vue";
 import mainForm from "./mainForm.vue";
+import WikiInfoView from "@/views/WikiInfoView.vue";
 const hiddenMap = ref(true);
+const pais = ref("");
+const estado = ref("");
+const ciudad = ref("");
 
-const showMap = () => {
-  console.log("PADRE ACTIVADO");
+const showMap = (selectedPais, selectedEstado, selectedCiudad) => {
+  pais.value = selectedPais;
+  estado.value = selectedEstado;
+  ciudad.value = selectedCiudad;
   hiddenMap.value = false;
 };
 </script>
@@ -26,7 +32,16 @@ const showMap = () => {
   </section>
   <mainForm @mostrar-mapa="showMap"></mainForm>
 
-  <section id="container-map" v-if="!hiddenMap">
+  <section id="container-map" v-if="!hiddenMap" class="mt-20">
+    <section
+      class="container my-10 mx-auto flex flex-col p-5 w-[90%] max-w-4xl fondo"
+    >
+      <WikiInfoView
+        :Pais="pais"
+        :Estado="estado"
+        :Ciudad="ciudad"
+      ></WikiInfoView>
+    </section>
     <mapComponent></mapComponent>
   </section>
 </template>

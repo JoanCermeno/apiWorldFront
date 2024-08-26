@@ -3,18 +3,26 @@ import { ref, onMounted } from "vue";
 import Swal from "sweetalert2";
 // Importa `defineEmits` para emitir eventos al componente padre
 const emit = defineEmits(["mostrar-mapa"]); // Lista de eventos que el componente emitirá
-
 const apiURL = import.meta.env.VITE_API_URL;
 const listPais = ref([]);
 const listEstados = ref([]);
 const listCiudades = ref([]);
 const selectedPais = ref("");
-const estadoSelected = ref("");
-const ciudadSelected = ref("");
+const selectedEstado = ref("");
+const selectedCiudad = ref("");
 const loaddingPais = ref(true);
 const loaddingEstado = ref(false);
 const loaddingCiudad = ref(false);
-
+const httpRequest = ref({
+  Pais: "",
+  Estado: "",
+  Ciudad: "",
+});
+const inputs = ref({
+  Pais: false,
+  Estado: false,
+  Ciudad: false,
+});
 async function pedirData(url, options = {}) {
   try {
     const response = await fetch(url, options);
@@ -54,6 +62,7 @@ function mostarAlerta(title) {
 onMounted(async () => {
   try {
     listPais.value = await pedirData(`${apiURL}/pais`);
+    httpRequest.value.Pais = `/pais`;
   } catch (error) {
     mostarAlerta("Ocurrio un problema al mostrar los paises.");
     console.error("Failed to fetch pais:", error);
@@ -66,27 +75,40 @@ onMounted(async () => {
 async function traerEstadosDelPais(id_pais) {
   listEstados.value = await pedirData(`${apiURL}/estado?id_pais=${id_pais}`);
   loaddingEstado.value = false;
+  httpRequest.value.Estado = `/estado?id_pais=${id_pais}`;
 }
 
 function changePais(event) {
   //vaciamos todos los demas inputs
   console.log(`input pais canbio limpiando inputs`);
-  estadoSelected.value = "";
-  ciudadSelected.value = "";
-
+  selectedEstado.value = "";
+  selectedCiudad.value = "";
   const infoPaisSelected = listPais.value.find(
     (pais) => pais.name === event.target.value
   );
-  traerEstadosDelPais(infoPaisSelected.id);
-  loaddingEstado.value = true;
+  //validamos que el pais sea un pais valido
+  if (infoPaisSelected == undefined) {
+    inputs.value.Pais = true;
+  } else {
+    inputs.value.Pais = false;
+    console.log(inputs.value);
+    traerEstadosDelPais(infoPaisSelected.id);
+    loaddingEstado.value = true;
+  }
 }
 function cambioInputEstado(event) {
   console.log("se actualiz el imput estado");
-  const infoEstadoSelected = listEstados.value.find(
+  const infoselectedEstado = listEstados.value.find(
     (estado) => estado.name === event.target.value
   );
-  traerCiudades(infoEstadoSelected.country_id, infoEstadoSelected.id);
-  loaddingCiudad.value = true;
+
+  if (infoselectedEstado == undefined) {
+    inputs.value.Estado = true;
+  } else {
+    inputs.value.Estado = false;
+    traerCiudades(infoselectedEstado.country_id, infoselectedEstado.id);
+    loaddingCiudad.value = true;
+  }
 }
 
 // cargar ciudades
@@ -95,12 +117,19 @@ async function traerCiudades(pais_id, estado_id) {
     `${apiURL}/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`
   );
   loaddingCiudad.value = false;
+  //mandamos a mostrar la consulta a la api
+  httpRequest.value.Ciudad = `/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`;
 }
 
 function emitirMostrarMapa(e) {
   e.preventDefault();
   console.log("Evento mostrar map disparado!");
-  emit("mostrar-mapa");
+  emit(
+    "mostrar-mapa",
+    selectedPais.value,
+    selectedEstado.value,
+    selectedCiudad.value
+  );
 }
 </script>
 
@@ -126,6 +155,8 @@ function emitirMostrarMapa(e) {
           autocomplete="off"
           v-model="selectedPais"
           @change="changePais"
+          :class="{ invalidInput: inputs.Pais }"
+          required
         />
 
         <datalist v-if="!loaddingPais" id="pais">
@@ -137,7 +168,7 @@ function emitirMostrarMapa(e) {
             {{ pais.name }}
           </option>
         </datalist>
-        <p>{{ selectedPais }}</p>
+        <pre><div class="badge" v-if="httpRequest.Pais !== ''">GET</div> {{ httpRequest.Pais }}</pre>
       </div>
 
       <div class="container">
@@ -155,8 +186,10 @@ function emitirMostrarMapa(e) {
           placeholder="Seleciona un estado"
           class="w-full p-2 rounded border"
           autocomplete="off"
-          v-model="estadoSelected"
+          v-model="selectedEstado"
           @change="cambioInputEstado"
+          required
+          :class="{ invalidInput: inputs.Estado }"
         />
         <datalist id="estado">
           <option
@@ -167,7 +200,7 @@ function emitirMostrarMapa(e) {
             {{ estado.name }}
           </option>
         </datalist>
-        <p>{{ estadoSelected }}</p>
+        <pre><div class="badge" v-if="httpRequest.Estado !== ''">GET</div> {{ httpRequest.Estado }}</pre>
       </div>
 
       <div class="container">
@@ -176,7 +209,7 @@ function emitirMostrarMapa(e) {
 
           <span
             v-if="loaddingCiudad"
-            class="loading loading-infinity loading-md absolute left-16"
+            class="loading loading-ring loading-lg absolute left-12"
           ></span>
         </label>
         <input
@@ -186,7 +219,8 @@ function emitirMostrarMapa(e) {
           placeholder="buscar ciudad"
           autocomplete="off"
           class="w-full p-2 rounded border"
-          v-model="ciudadSelected"
+          v-model="selectedCiudad"
+          :class="{ invalidInput: inputs.Ciudad }"
         />
         <datalist id="ciudad">
           <option
@@ -197,7 +231,7 @@ function emitirMostrarMapa(e) {
             {{ ciudad.name }}
           </option>
         </datalist>
-        <p>{{ ciudadSelected }}</p>
+        <pre> <div class="badge" v-if="httpRequest.Ciudad !== ''">GET</div> {{ httpRequest.Ciudad }}</pre>
       </div>
 
       <!-- estart button send -->
@@ -233,5 +267,14 @@ input {
   -webkit-backdrop-filter: blur(12.5px);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.invalidInput {
+  box-shadow: 0 0 0 2px rgb(255, 92, 92); /* Crear el efecto de borde rojizo */
+  background-color: rgb(255, 207, 207);
+}
+
+pre {
+  margin: 10px auto;
+  font-family: monospace;
 }
 </style>
