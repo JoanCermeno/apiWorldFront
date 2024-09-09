@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, toRaw } from "vue";
 import Swal from "sweetalert2";
 // Importa `defineEmits` para emitir eventos al componente padre
 const emit = defineEmits(["mostrar-mapa"]); // Lista de eventos que el componente emitirá
@@ -124,11 +124,17 @@ async function traerCiudades(pais_id, estado_id) {
 function emitirMostrarMapa(e) {
   e.preventDefault();
   console.log("Evento mostrar map disparado!");
+  const ciudadesRaw = listCiudades.value.map((ciudad) => toRaw(ciudad));
+  const ciudadToShowInMap = ciudadesRaw.find(
+    (ciudad) => ciudad.name == selectedCiudad.value
+  );
+  console.log(ciudadToShowInMap);
   emit(
     "mostrar-mapa",
     selectedPais.value,
     selectedEstado.value,
-    selectedCiudad.value
+    selectedCiudad.value,
+    ciudadToShowInMap
   );
 }
 </script>

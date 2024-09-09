@@ -7,11 +7,18 @@ const hiddenMap = ref(true);
 const pais = ref("");
 const estado = ref("");
 const ciudad = ref("");
+const objCiudad = ref(null);
 
-const showMap = (selectedPais, selectedEstado, selectedCiudad) => {
+const showMap = (
+  selectedPais,
+  selectedEstado,
+  selectedCiudad,
+  ciudadToShowInMap
+) => {
   pais.value = selectedPais;
   estado.value = selectedEstado;
   ciudad.value = selectedCiudad;
+  objCiudad.value = ciudadToShowInMap;
   hiddenMap.value = false;
 };
 </script>
@@ -32,7 +39,7 @@ const showMap = (selectedPais, selectedEstado, selectedCiudad) => {
   </section>
   <mainForm @mostrar-mapa="showMap"></mainForm>
 
-  <section id="container-map" v-if="!hiddenMap" class="mt-20">
+  <section id="container-map" v-if="!hiddenMap" class="mt-22">
     <section
       class="container my-10 mx-auto flex flex-col p-5 w-[90%] max-w-4xl fondo"
     >
@@ -41,8 +48,9 @@ const showMap = (selectedPais, selectedEstado, selectedCiudad) => {
         :Estado="estado"
         :Ciudad="ciudad"
       ></WikiInfoView>
+      <!-- aca comienza el mapa -->
+      <mapComponent :ToRender="objCiudad"></mapComponent>
     </section>
-    <mapComponent></mapComponent>
   </section>
 </template>
 
