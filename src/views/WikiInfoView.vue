@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
+
 //definimos las variables que vamos a mostrar (props)
 const props = defineProps({
   Pais: String,
@@ -20,6 +21,12 @@ const loaddin = ref({
 const msgEmpyResponse = "No se puedo encontrar informacion sobre";
 //buscamos los datos
 const getinfo = async (pais, estado, ciudad) => {
+  //desplazamos al usuario a esta area.
+  window.scrollBy({
+    top: 900, // Cantidad de píxeles para desplazar hacia abajo
+    behavior: "smooth",
+  });
+
   //console.log("Pidiendo datos a la wikipedia");
 
   const responseWipediaPais = await fetch(
@@ -38,7 +45,7 @@ const getinfo = async (pais, estado, ciudad) => {
   }
 
   const responseWipediaEstado = await fetch(
-    `https://es.wikipedia.org/w/api.php?action=query&list=search&srprop=snippet&format=json&origin=*&utf8=&srsearch=` +
+    `https://es.wikipedia.org/w/api.php?action=query&list=search&srprop=snippet&format=json&origin=*&utf8=&srsearch=estado ` +
       estado
   );
   const dataEstado = await responseWipediaEstado.json();
@@ -52,7 +59,7 @@ const getinfo = async (pais, estado, ciudad) => {
   }
 
   const responseWipediaCiudad = await fetch(
-    `https://es.wikipedia.org/w/api.php?action=query&list=search&srprop=snippet&format=json&origin=*&utf8=&srsearch=` +
+    `https://es.wikipedia.org/w/api.php?action=query&list=search&srprop=snippet&format=json&origin=*&utf8=&srsearch=ciudad de` +
       ciudad
   );
   const dataCiudad = await responseWipediaCiudad.json();

@@ -23,6 +23,8 @@ const inputs = ref({
   Estado: false,
   Ciudad: false,
 });
+const inputsDisable = ref(false);
+
 async function pedirData(url, options = {}) {
   try {
     const response = await fetch(url, options);
@@ -65,7 +67,10 @@ onMounted(async () => {
     httpRequest.value.Pais = `/pais`;
   } catch (error) {
     mostarAlerta("Ocurrio un problema al mostrar los paises.");
+    //desactivamos todos los imputs
+    inputsDisable.value = true;
     console.error("Failed to fetch pais:", error);
+    console.log(inputsDisable.value);
   } finally {
     loaddingPais.value = false;
   }
@@ -110,6 +115,19 @@ function cambioInputEstado(event) {
     loaddingCiudad.value = true;
   }
 }
+//evento cambio de ciudad
+function cambioInputCiudad(event) {
+  console.log("se actualiz el imput Ciudad");
+  const infoselectedCiudad = listCiudades.value.find(
+    (ciudad) => ciudad.name === event.target.value
+  );
+
+  if (infoselectedCiudad == undefined) {
+    inputs.value.Ciudad = true;
+  } else {
+    inputs.value.Ciudad = false;
+  }
+}
 
 // cargar ciudades
 async function traerCiudades(pais_id, estado_id) {
@@ -123,7 +141,7 @@ async function traerCiudades(pais_id, estado_id) {
 
 function emitirMostrarMapa(e) {
   e.preventDefault();
-  console.log("Evento mostrar map disparado!");
+
   const ciudadesRaw = listCiudades.value.map((ciudad) => toRaw(ciudad));
   const ciudadToShowInMap = ciudadesRaw.find(
     (ciudad) => ciudad.name == selectedCiudad.value
@@ -156,12 +174,13 @@ function emitirMostrarMapa(e) {
           id="pais-input"
           name="pais"
           list="pais"
-          placeholder="Pais"
           class="p-2 rounded border w-full"
+          :placeholder="inputsDisable ? 'Servicio no disponible' : 'Pais'"
           autocomplete="off"
           v-model="selectedPais"
           @change="changePais"
-          :class="{ invalidInput: inputs.Pais }"
+          :class="{ invalidInput: inputs.Pais, disabled: inputsDisable }"
+          :disabled="inputsDisable"
           required
         />
 
@@ -189,13 +208,16 @@ function emitirMostrarMapa(e) {
           type="text"
           id="estado-input"
           list="estado"
-          placeholder="Seleciona un estado"
           class="w-full p-2 rounded border"
           autocomplete="off"
           v-model="selectedEstado"
           @change="cambioInputEstado"
           required
-          :class="{ invalidInput: inputs.Estado }"
+          :class="{ invalidInput: inputs.Estado, disabled: inputsDisable }"
+          :disabled="inputsDisable"
+          :placeholder="
+            inputsDisable ? 'Servicio no disponible' : 'Selecione un estado'
+          "
         />
         <datalist id="estado">
           <option
@@ -222,11 +244,13 @@ function emitirMostrarMapa(e) {
           type="text"
           id="ciudad-input"
           list="ciudad"
-          placeholder="buscar ciudad"
+          :placeholder="inputsDisable ? 'Servicio no disponible' : 'Ciudad'"
           autocomplete="off"
+          @change="cambioInputCiudad"
           class="w-full p-2 rounded border"
           v-model="selectedCiudad"
-          :class="{ invalidInput: inputs.Ciudad }"
+          :class="{ invalidInput: inputs.Ciudad, disabled: inputsDisable }"
+          :disabled="inputsDisable"
         />
         <datalist id="ciudad">
           <option
@@ -244,7 +268,7 @@ function emitirMostrarMapa(e) {
       <div class="containerButton container">
         <button
           type="submit"
-          class="btn btn-block btn-neutral"
+          class="btn btn-block btn-accent text-neutral"
           @click="emitirMostrarMapa"
         >
           Consultar Info
@@ -264,6 +288,7 @@ input {
   margin-top: 0.5rem;
   color: darkblue;
   background-color: #e5e5e5;
+  padding: 10px;
 }
 
 .formBackground {
@@ -282,5 +307,8 @@ input {
 pre {
   margin: 10px auto;
   font-family: monospace;
+}
+.disabled {
+  cursor: not-allowed;
 }
 </style>

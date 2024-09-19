@@ -8,7 +8,6 @@ const pais = ref("");
 const estado = ref("");
 const ciudad = ref("");
 const objCiudad = ref(null);
-
 const showMap = (
   selectedPais,
   selectedEstado,
@@ -44,12 +43,19 @@ const showMap = (
       class="container my-10 mx-auto flex flex-col p-5 w-[90%] max-w-4xl fondo"
     >
       <WikiInfoView
+        ref="infoSite"
         :Pais="pais"
         :Estado="estado"
         :Ciudad="ciudad"
       ></WikiInfoView>
+
       <!-- aca comienza el mapa -->
-      <mapComponent :ToRender="objCiudad"></mapComponent>
+      <mapComponent
+        :Pais="pais"
+        :Estado="estado"
+        :Ciudad="ciudad"
+        :ToRender="objCiudad"
+      ></mapComponent>
     </section>
   </section>
 </template>

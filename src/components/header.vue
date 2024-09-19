@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from "vue";
-
+import { RouterLink } from "vue-router";
+//sacando la url de la API
+const baseApiUrl = import.meta.env.VITE_API_URL;
+const documentacionURL = baseApiUrl + "/docs";
+console.log(documentacionURL);
 let menuIsVisible = ref(false);
 
 window.addEventListener("resize", () => {
@@ -17,20 +21,25 @@ window.addEventListener("resize", () => {
   <header
     class="fixed top-5 left-[5%] w-[90%] z-10 py-2 px-4 flex lg:flex-row flex-col justify-between align-items-center lg:align-items-start fondo"
   >
-    <section class="text-2xl flex gap-2 items-center">
-      <span class="texto-con-degradado">{ API World }</span> 🌎
-    </section>
+    <router-link to="/">
+      <section class="text-2xl flex gap-2 items-center">
+        <span class="texto-con-degradado">{ API World }</span> 🌎
+      </section>
+    </router-link>
+
     <!-- section con los enlaces de interes  -->
 
     <nav
-      class="flex lg:flex-row w-full lg:w-[40%] justify-evenly flex-col text-center h-100"
+      class="flex lg:flex-row justify-between flex-col text-center h-100 px-2"
       :class="{ ocultar: menuIsVisible }"
     >
       <ul
-        class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-6 p-2"
+        class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-10"
       >
         <!-- Aplicamos Flexbox y centramos el contenido dentro de cada <li> -->
-        <li class="flex items-center justify-center">About</li>
+        <a :href="documentacionURL">
+          <li class="flex items-center justify-center">Documentación</li>
+        </a>
         <li class="flex items-center justify-center">About</li>
         <li class="flex items-center justify-center">About</li>
         <li class="flex items-center justify-center">About</li>
@@ -83,7 +92,6 @@ window.addEventListener("resize", () => {
   }
 }
 
-
 li {
   position: relative;
   user-select: none;
@@ -94,15 +102,16 @@ li {
 li::after {
   content: "";
   position: absolute;
-  width: 0%;
-  height: 2px;
+  width: 100%;
+  height: 100%;
   bottom: 0px;
   transition: 0.2s ease-out width;
-  background-color: #00cdb7;
-  border-radius: 2px;
+  padding: 10px 30px;
+  border-radius: 5px;
+  transition: 0.5s background ease;
 }
 li:hover::after {
-  width: 100%;
+  background-color: #fafafa41;
 }
 /* transiion del menu */
 

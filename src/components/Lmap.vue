@@ -58,6 +58,7 @@ const initMap = async (lat, lon) => {
 };
 
 const updateMap = async (lat, lon) => {
+  let geojson = undefined;
   // Limpiar cualquier capa previa en el mapa
   map.eachLayer((layer) => {
     if (!layer._url) map.removeLayer(layer); // Mantener solo la capa de tiles
@@ -65,33 +66,70 @@ const updateMap = async (lat, lon) => {
 
   // Obtener límites de la ciudad desde Overpass API
   const geoJsonData = await fetchCityBoundaries(lat, lon);
-  // console.log("objeto de geoJsonData");
+  console.log("objeto de geoJsonDate debe ser asi");
+  console.log(geoJsonData);
 
   const indexRouteToRender = geoJsonData.elements.findIndex((item) =>
     item.tags.name.includes(props.ToRender.name)
   );
+  // console.log("Coincidencias encontrada?");
   console.log(indexRouteToRender);
-  // console.log("asi debe ser el objeto que puede pintar el mapa");
-  geoJsonData.elements = [geoJsonData.elements[indexRouteToRender]];
-  console.log(geoJsonData);
-  // Convertir el resultado a GeoJSON para agregar al mapa
-  const geojson = osmtogeojson(geoJsonData);
 
-  // Agregar los límites de la ciudad al mapa
-  L.geoJSON(geojson, {
-    style: () => ({
-      color: "blue",
-      weight: 1,
-      fillOpacity: 0.1,
-    }),
-  }).addTo(map);
+  if (indexRouteToRender != -1) {
+    geoJsonData.elements = [geoJsonData.elements[indexRouteToRender]];
+    // Convertir el resultado a GeoJSON para agregar al mapa
+    geojson = osmtogeojson(geoJsonData);
+    // Agregar los límites de la ciudad al mapa
+    L.geoJSON(geojson, {
+      style: () => ({
+        color: "blue",
+        weight: 1,
+        fillOpacity: 0.1,
+      }),
+    }).addTo(map);
 
-  // Ajustar la vista del mapa según los nuevos límites
-  map.setView([lat, lon], 12);
+    // Ajustar la vista del mapa según los nuevos límites
+    map.setView([lat, lon], 12);
+  } else {
+    console.log("pintamos el circulo");
+    const radiusInMeters = 900; //esta unidad son metros
+    L.circle([lat, lon], { radius: radiusInMeters })
+      .setStyle({
+        color: "blue",
+        weight: 2,
+        opacity: 0.5,
+        fillOpacity: 0.2,
+      })
+      .addTo(map);
+
+    // Ajustar la vista del mapa para centrar el círculo
+    map.setView([lat, lon], 12);
+  }
 };
 </script>
 
 <template>
+  <!-- Aca vamos a mostrar el enlace para mandar a google maps -->
+  <div class="container flex p-5 justify-between">
+    <div class="flex gap-2">
+      <div id="latitude" class="badge badge-lg">
+        Lat:
+        {{ props.ToRender.latitude }}
+      </div>
+
+      <div id="longitud" class="badge badge-lg">
+        Long
+        {{ props.ToRender.longitude }}
+      </div>
+    </div>
+    <!-- https://www.google.com/maps/place/${ciudad.name} ${estadoName} ${paisName} -->
+    <a
+      class="link"
+      :href="`https://www.google.com/maps/place/${props.ToRender.latitude},${props.ToRender.longitude}`"
+      target="_blank"
+      >Ver en Google Maps🗺️</a
+    >
+  </div>
   <div id="map" class="w-full mx-auto z-0"></div>
 </template>
 
