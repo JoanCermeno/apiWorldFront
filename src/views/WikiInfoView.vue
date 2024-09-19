@@ -23,7 +23,7 @@ const msgEmpyResponse = "No se puedo encontrar informacion sobre";
 const getinfo = async (pais, estado, ciudad) => {
   //desplazamos al usuario a esta area.
   window.scrollBy({
-    top: 900, // Cantidad de píxeles para desplazar hacia abajo
+    top: 2100, // Cantidad de píxeles para desplazar hacia abajo
     behavior: "smooth",
   });
 

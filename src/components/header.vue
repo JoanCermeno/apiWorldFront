@@ -69,17 +69,6 @@ window.addEventListener("resize", () => {
 </template>
 
 <style scoped>
-.texto-con-degradado {
-  font-size: 24px;
-  background-image: linear-gradient(to left, rgb(245, 152, 245), #6ddfff);
-  background-clip: text;
-  background-size: 200%;
-  -webkit-text-fill-color: transparent;
-  /* Fallback para navegadores que no soportan las propiedades anteriores */
-  color: #ffffff;
-  animation: moverGradient linear infinite 10s;
-}
-
 @keyframes moverGradient {
   0% {
     background-position: 0%;
