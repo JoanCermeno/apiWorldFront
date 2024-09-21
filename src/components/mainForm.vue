@@ -32,11 +32,11 @@ async function pedirData(url, options = {}) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+    console.log(response);
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error al hacer fecth:", error);
     throw error;
   }
 }
@@ -63,7 +63,14 @@ function mostarAlerta(title) {
 
 onMounted(async () => {
   try {
-    listPais.value = await pedirData(`${apiURL}/pais`);
+    listPais.value = await pedirData(`${apiURL}/pais`, {
+      method: "GET", // o 'POST', según tu caso
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Este encabezado evita la advertencia
+        "Content-Type": "application/json",
+      },
+    });
+
     httpRequest.value.Pais = `/pais`;
   } catch (error) {
     mostarAlerta("Ocurrio un problema al mostrar los paises.");
@@ -78,7 +85,13 @@ onMounted(async () => {
 
 // Cargar estados al formulario
 async function traerEstadosDelPais(id_pais) {
-  listEstados.value = await pedirData(`${apiURL}/estado?id_pais=${id_pais}`);
+  listEstados.value = await pedirData(`${apiURL}/estado?id_pais=${id_pais}`, {
+    method: "GET", // o 'POST', según tu caso
+    headers: {
+      "ngrok-skip-browser-warning": "true", // Este encabezado evita la advertencia
+      "Content-Type": "application/json",
+    },
+  });
   loaddingEstado.value = false;
   httpRequest.value.Estado = `/estado?id_pais=${id_pais}`;
 }
@@ -132,7 +145,14 @@ function cambioInputCiudad(event) {
 // cargar ciudades
 async function traerCiudades(pais_id, estado_id) {
   listCiudades.value = await pedirData(
-    `${apiURL}/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`
+    `${apiURL}/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`,
+    {
+      method: "GET", // o 'POST', según tu caso
+      headers: {
+        "ngrok-skip-browser-warning": "true", // Este encabezado evita la advertencia
+        "Content-Type": "application/json",
+      },
+    }
   );
   loaddingCiudad.value = false;
   //mandamos a mostrar la consulta a la api
