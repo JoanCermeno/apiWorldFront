@@ -87,7 +87,6 @@ async function traerEstadosDelPais(id_pais) {
   listEstados.value = await pedirData(`${apiURL}/estado?id_pais=${id_pais}`, {
     method: "GET", // o 'POST', según tu caso
     headers: {
-      "ngrok-skip-browser-warning": "true", // Este encabezado evita la advertencia
       "Content-Type": "application/json",
     },
   });
@@ -148,7 +147,6 @@ async function traerCiudades(pais_id, estado_id) {
     {
       method: "GET", // o 'POST', según tu caso
       headers: {
-        "ngrok-skip-browser-warning": "true", // Este encabezado evita la advertencia
         "Content-Type": "application/json",
       },
     }
