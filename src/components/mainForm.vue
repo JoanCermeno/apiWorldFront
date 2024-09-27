@@ -66,7 +66,6 @@ onMounted(async () => {
     listPais.value = await pedirData(`${apiURL}/pais`, {
       method: "GET", // o 'POST', según tu caso
       headers: {
-        "ngrok-skip-browser-warning": "true", // Este encabezado evita la advertencia
         "Content-Type": "application/json",
       },
     });
