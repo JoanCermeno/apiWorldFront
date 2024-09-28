@@ -5,7 +5,7 @@ import { RouterLink } from "vue-router";
 const baseApiUrl = import.meta.env.VITE_API_URL;
 const documentacionURL = baseApiUrl + "/docs";
 console.log(documentacionURL);
-let menuIsVisible = ref(false);
+let menuIsVisible = ref(true);
 window.addEventListener("resize", () => {
   if (window.innerWidth >= 1024) {
     menuIsVisible.value = true;

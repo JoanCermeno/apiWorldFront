@@ -1,5 +1,7 @@
 <script setup>
+import { data } from "autoprefixer";
 import { ref, watch } from "vue";
+let pageIdPais, pageIdEstado, pageIdCiudad;
 
 //definimos las variables que vamos a mostrar (props)
 const props = defineProps({
@@ -42,6 +44,7 @@ const getinfo = async (pais, estado, ciudad) => {
     infoPais.value = `${msgEmpyResponse} este pais 🫤`;
   } else {
     infoPais.value = dataPais.query.search[0].snippet;
+    pageIdPais = dataPais.query.search[0].pageid;
   }
 
   const responseWipediaEstado = await fetch(
@@ -56,6 +59,7 @@ const getinfo = async (pais, estado, ciudad) => {
     infoEstado.value = `${msgEmpyResponse} este estado 🫤`;
   } else {
     infoEstado.value = dataEstado.query.search[0].snippet;
+    pageIdEstado = dataEstado.query.search[0].pageid;
   }
 
   const responseWipediaCiudad = await fetch(
@@ -70,6 +74,7 @@ const getinfo = async (pais, estado, ciudad) => {
     infoCiudad.value = `${msgEmpyResponse} esta ciudad 🫤`;
   } else {
     infoCiudad.value = dataCiudad.query.search[0].snippet;
+    pageIdCiudad = dataCiudad.query.search[0].pageid;
   }
 
   //console.log(infoPais, infoEstado, infoCiudad);
@@ -102,6 +107,9 @@ watch(
     <div v-show="!loaddin.pais">
       <h1>{{ Pais }}</h1>
       <p v-html="infoPais"></p>
+      <a :href="`https://es.wikipedia.org/?curid=${pageIdPais}`" class="link"
+        >leer mas en wikipedia</a
+      >
     </div>
   </div>
   <div class="p-5">
@@ -114,6 +122,9 @@ watch(
     <div v-show="!loaddin.estado">
       <h1>{{ Estado }}</h1>
       <p v-html="infoEstado"></p>
+      <a :href="`https://es.wikipedia.org/?curid=${pageIdEstado}`" class="link"
+        >leer mas en wikipedia</a
+      >
     </div>
   </div>
   <div class="p-5">
@@ -126,6 +137,9 @@ watch(
     <div v-show="!loaddin.ciudad">
       <h1>{{ Ciudad }}</h1>
       <p v-html="infoCiudad"></p>
+      <a :href="`https://es.wikipedia.org/?curid=${pageIdCiudad}`" class="link"
+        >leer mas en wikipedia</a
+      >
     </div>
   </div>
 </template>
