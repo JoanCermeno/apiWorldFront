@@ -6,7 +6,7 @@ import myFooter from "./views/footer.vue";
 
 <template>
   <HeaderPrincipal></HeaderPrincipal>
-  <main class="relative pt-[5%] overflow-auto mb-10">
+  <main class="relative pt-[5%] overflow-auto mb-10 h-">
     <RouterView></RouterView>
   </main>
 

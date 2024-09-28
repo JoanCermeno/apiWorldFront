@@ -171,6 +171,14 @@ function emitirMostrarMapa(e) {
     ciudadToShowInMap
   );
 }
+const copyTextToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    console.log("Texto copiado al portapapeles");
+  } catch (err) {
+    console.error("Error al copiar:", err);
+  }
+};
 
 const copiarEndoint = (e) => {
   // si es uno pais, si dos ,estado si 3 ciudad si difenrete no copiar nada al clipboard
@@ -180,15 +188,28 @@ const copiarEndoint = (e) => {
   switch (endponitCliked) {
     case "endpointPais":
       // console.log(httpRequest.value.Pais);
-      console.log(apiURL + httpRequest.value.Pais);
+      copyTextToClipboard(apiURL + httpRequest.value.Pais);
       break;
     case "endpointEstado":
       //console.log(httpRequest.value.Estado);
-      console.log(apiURL + httpRequest.value.Estado);
+      copyTextToClipboard(apiURL + httpRequest.value.Estado);
+
       break;
     case "endpointCiudad":
       // console.log(httpRequest.value.Ciudad);
-      console.log(apiURL + httpRequest.value.Ciudad);
+      copyTextToClipboard(apiURL + httpRequest.value.Ciudad);
+      break;
+    case "Layer_3":
+      //layer es el id de cada copi icon svg
+      copyTextToClipboard(apiURL + httpRequest.value.Pais);
+      break;
+    case "Layer_2":
+      copyTextToClipboard(apiURL + httpRequest.value.Estado);
+
+      break;
+    case "Layer_1":
+      copyTextToClipboard(apiURL + httpRequest.value.Ciudad);
+
       break;
     default:
       console.log("no cpiar nada al cliboard");

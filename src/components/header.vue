@@ -6,13 +6,11 @@ const baseApiUrl = import.meta.env.VITE_API_URL;
 const documentacionURL = baseApiUrl + "/docs";
 console.log(documentacionURL);
 let menuIsVisible = ref(false);
-
 window.addEventListener("resize", () => {
-  //si la ventana es igual o mayor a lg mostrar el menu pantalla completa
   if (window.innerWidth >= 1024) {
-    menuIsVisible.value = false;
-  } else {
     menuIsVisible.value = true;
+  } else {
+    menuIsVisible.value = false;
   }
 });
 </script>
@@ -29,20 +27,20 @@ window.addEventListener("resize", () => {
 
     <!-- section con los enlaces de interes  -->
 
-    <nav
-      class="flex lg:flex-row justify-between flex-col text-center h-100 px-2"
-      :class="{ ocultar: menuIsVisible }"
-    >
+    <nav class="flex lg:flex-row justify-between flex-col text-center px-2">
       <ul
         class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-10"
+        :class="{ ocultar: !menuIsVisible, mostrar: menuIsVisible }"
       >
         <!-- Aplicamos Flexbox y centramos el contenido dentro de cada <li> -->
         <a :href="documentacionURL">
           <li class="flex items-center justify-center">Documentación</li>
         </a>
-        <li class="flex items-center justify-center">About</li>
-        <li class="flex items-center justify-center">About</li>
-        <li class="flex items-center justify-center">About</li>
+        <a
+          href="https://drive.google.com/file/d/1m4TIBFPlIZPmynR9JjDTtHootvQwVGH6/view?usp=drive_link"
+        >
+          <li class="flex items-center justify-center">Descargar SQL</li>
+        </a>
       </ul>
     </nav>
 
@@ -87,6 +85,7 @@ li {
   color: #ddd;
   cursor: pointer;
   font-size: large;
+  padding: 2px 20px;
 }
 li::after {
   content: "";
@@ -105,16 +104,21 @@ li:hover::after {
 /* transiion del menu */
 
 nav {
-  transition: all 0.2s linear;
-  max-height: 200px;
   max-width: 100%;
-  overflow: hidden;
 }
-
-.ocultar {
+ul {
+  max-height: 0; /* Empieza oculto */
   overflow: hidden;
+  transition:
+    max-height 0.5s ease-in-out,
+    opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+.ocultar {
   max-height: 0px;
-
-  transition: all 0.5s;
+}
+ul.mostrar {
+  max-height: 200px; /* Establece la altura máxima a un valor suficiente para tu contenido */
+  opacity: 1;
 }
 </style>
