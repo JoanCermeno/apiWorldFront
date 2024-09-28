@@ -29,7 +29,7 @@ window.addEventListener("resize", () => {
 
     <nav class="flex lg:flex-row justify-between flex-col text-center px-2">
       <ul
-        class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-10"
+        class="h-[50%] lg:h-full mx-auto justify-center flex flex-col lg:flex-row items-center gap-5"
         :class="{ ocultar: !menuIsVisible, mostrar: menuIsVisible }"
       >
         <!-- Aplicamos Flexbox y centramos el contenido dentro de cada <li> -->
@@ -102,23 +102,35 @@ li:hover::after {
   background-color: #fafafa41;
 }
 /* transiion del menu */
+@keyframes fadeJoan {
+  0% {
+    max-height: 0px;
+    overflow: hidden;
+  }
+  100% {
+    max-height: 200px;
+  }
+}
+@keyframes fadeJoanSalida {
+  0% {
+    max-height: 200px;
+  }
+  100% {
+    max-height: 0px;
+    overflow: hidden;
+  }
+}
 
 nav {
   max-width: 100%;
 }
-ul {
-  max-height: 0; /* Empieza oculto */
-  overflow: hidden;
-  transition:
-    max-height 0.5s ease-in-out,
-    opacity 0.5s ease-in-out;
-  opacity: 0;
-}
+
 .ocultar {
   max-height: 0px;
+  overflow: hidden;
 }
 ul.mostrar {
-  max-height: 200px; /* Establece la altura máxima a un valor suficiente para tu contenido */
-  opacity: 1;
+  animation-name: fadeJoan;
+  animation-duration: 1s;
 }
 </style>

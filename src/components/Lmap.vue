@@ -110,24 +110,26 @@ const updateMap = async (lat, lon) => {
 
 <template>
   <!-- Aca vamos a mostrar el enlace para mandar a google maps -->
-  <div class="container flex p-5 justify-between">
-    <div class="flex gap-2">
-      <div id="latitude" class="badge badge-lg">
+  <div
+    class="container flex flex-col p-5 justify-center items-center gap-4 lg:flex-row lg:justify-between"
+  >
+    <div class="flex gap-2 justify-center max-h-6">
+      <div id="latitude" class="badge truncate rounded-md px-2">
         Lat:
         {{ props.ToRender.latitude }}
       </div>
 
-      <div id="longitud" class="badge badge-lg">
+      <div id="longitud" class="badge truncate rounded-md px-2">
         Long
         {{ props.ToRender.longitude }}
       </div>
     </div>
     <!-- https://www.google.com/maps/place/${ciudad.name} ${estadoName} ${paisName} -->
     <a
-      class="link"
+      class="text-center btn"
       :href="`https://www.google.com/maps/place/${props.ToRender.latitude},${props.ToRender.longitude}`"
       target="_blank"
-      >Ver en Google Maps🗺️</a
+      >Ver en Google Maps 🗺️</a
     >
   </div>
   <div id="map" class="w-full mx-auto z-0"></div>
