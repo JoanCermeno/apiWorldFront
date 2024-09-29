@@ -21,17 +21,10 @@ Actualmente, **FrontAPIWorld** está en una **fase de desarrollo muy temprana**.
 - **Frontend**: [Vue.js](https://vuejs.org/)
 - **Backend**: [Fastify](https://www.fastify.io/)
 
-## Instalación y Uso
-
-proximamente
 
 ## Contribuciones
 
 Dado que el proyecto está en una fase inicial, cualquier sugerencia, reporte de bugs o contribución es más que bienvenida. ¡Siéntete libre de abrir un issue o un pull request!
-
-## Licencia
-
-Este proyecto está bajo la [MIT License](./LICENSE).
 
 ---
 
