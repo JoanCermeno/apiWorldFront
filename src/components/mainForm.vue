@@ -23,6 +23,11 @@ const inputs = ref({
   Estado: false,
   Ciudad: false,
 });
+//validar inputs para desabilitar button
+const isButtonDisabled = ref(false);
+
+console.log(inputs.value);
+
 const inputsDisable = ref(false);
 
 async function pedirData(url, options = {}) {
@@ -41,7 +46,7 @@ async function pedirData(url, options = {}) {
   }
 }
 
-function mostarAlerta(title) {
+function mostarAlerta(title, icon, textFooter) {
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -54,9 +59,9 @@ function mostarAlerta(title) {
     },
   });
   Toast.fire({
-    icon: "warning",
+    icon: `${icon}`,
     title: `${title}`,
-    footer: '<a href="#">Si el problma persiste REPORTE ESTE BUG?</a>',
+    footer: `${textFooter}`,
     timer: 5000,
   });
 }
@@ -64,14 +69,18 @@ function mostarAlerta(title) {
 onMounted(async () => {
   try {
     listPais.value = await pedirData(`${apiURL}/pais`, {
-      method: "GET", // o 'POST', según tu caso
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
     httpRequest.value.Pais = `/pais`;
   } catch (error) {
-    mostarAlerta("Ocurrio un problema al mostrar los paises.");
+    mostarAlerta(
+      "Ocurrio un problema al mostrar los paises.",
+      "warning",
+      '<a href="https://github.com/JoanCermeno/apiWorldFront/issues"> No se pudo conectar a la base de datos, Si el problema persiste reportar bug aca!</a>'
+    );
     //desactivamos todos los imputs
     inputsDisable.value = true;
     console.error("Failed to fetch pais:", error);
@@ -104,25 +113,31 @@ function changePais(event) {
   //validamos que el pais sea un pais valido
   if (infoPaisSelected == undefined) {
     inputs.value.Pais = true;
+    isButtonDisabled.value = true;
   } else {
     inputs.value.Pais = false;
     console.log(inputs.value);
     traerEstadosDelPais(infoPaisSelected.id);
     loaddingEstado.value = true;
+    isButtonDisabled.value = false;
   }
 }
 function cambioInputEstado(event) {
   console.log("se actualiz el imput estado");
+
   const infoselectedEstado = listEstados.value.find(
     (estado) => estado.name === event.target.value
   );
+  console.log(infoselectedEstado);
 
   if (infoselectedEstado == undefined) {
     inputs.value.Estado = true;
+    isButtonDisabled.value = true;
   } else {
     inputs.value.Estado = false;
     traerCiudades(infoselectedEstado.country_id, infoselectedEstado.id);
     loaddingCiudad.value = true;
+    isButtonDisabled.value = false;
   }
 }
 //evento cambio de ciudad
@@ -133,26 +148,32 @@ function cambioInputCiudad(event) {
   );
 
   if (infoselectedCiudad == undefined) {
+    isButtonDisabled.value = true;
     inputs.value.Ciudad = true;
   } else {
     inputs.value.Ciudad = false;
+    isButtonDisabled.value = false;
   }
 }
 
 // cargar ciudades
-async function traerCiudades(pais_id, estado_id) {
-  listCiudades.value = await pedirData(
-    `${apiURL}/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`,
-    {
-      method: "GET", // o 'POST', según tu caso
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  loaddingCiudad.value = false;
-  //mandamos a mostrar la consulta a la api
-  httpRequest.value.Ciudad = `/ciudad?pais_id=${pais_id}&estado_id=${estado_id}`;
+async function traerCiudades(id_pais, id_estado) {
+  try {
+    listCiudades.value = await pedirData(
+      `${apiURL}/ciudad?id_pais=${id_pais}&id_estado=${id_estado}`,
+      {
+        method: "GET", // o 'POST', según tu caso
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    loaddingCiudad.value = false;
+    //mandamos a mostrar la consulta a la api
+    httpRequest.value.Ciudad = `/ciudad?id_pais=${id_pais}&id_estado=${id_estado}`;
+  } catch (error) {
+    throw error;
+  }
 }
 
 function emitirMostrarMapa(e) {
@@ -181,39 +202,49 @@ const copyTextToClipboard = async (text) => {
 };
 
 const copiarEndoint = (e) => {
+  let textoCopiado = 0;
   // si es uno pais, si dos ,estado si 3 ciudad si difenrete no copiar nada al clipboard
-  const endponitCliked = e.explicitOriginalTarget.id;
+  const endponitCliked = e.currentTarget.id;
 
-  console.log(e.explicitOriginalTarget);
   switch (endponitCliked) {
     case "endpointPais":
       // console.log(httpRequest.value.Pais);
       copyTextToClipboard(apiURL + httpRequest.value.Pais);
+      textoCopiado = apiURL + httpRequest.value.Pais;
       break;
     case "endpointEstado":
       //console.log(httpRequest.value.Estado);
       copyTextToClipboard(apiURL + httpRequest.value.Estado);
+      textoCopiado = apiURL + httpRequest.value.Estado;
 
       break;
     case "endpointCiudad":
       // console.log(httpRequest.value.Ciudad);
       copyTextToClipboard(apiURL + httpRequest.value.Ciudad);
+      textoCopiado = apiURL + httpRequest.value.Ciudad;
+
       break;
     case "Layer_3":
       //layer es el id de cada copi icon svg
       copyTextToClipboard(apiURL + httpRequest.value.Pais);
+      textoCopiado = apiURL + httpRequest.value.Pais;
+
       break;
     case "Layer_2":
       copyTextToClipboard(apiURL + httpRequest.value.Estado);
+      textoCopiado = apiURL + httpRequest.value.Estado;
 
       break;
     case "Layer_1":
       copyTextToClipboard(apiURL + httpRequest.value.Ciudad);
+      textoCopiado = apiURL + httpRequest.value.Ciudad;
 
       break;
     default:
       console.log("no cpiar nada al cliboard");
   }
+
+  mostarAlerta("🌎 Copiado! 😁  Wiiii! ", "info", `${textoCopiado}`);
 };
 </script>
 
@@ -236,7 +267,6 @@ const copiarEndoint = (e) => {
           list="pais"
           class="p-2 rounded border w-full"
           :placeholder="inputsDisable ? 'Servicio no disponible' : 'Pais'"
-          autocomplete="off"
           v-model="selectedPais"
           @change="changePais"
           :class="{ invalidInput: inputs.Pais, disabled: inputsDisable }"
@@ -314,7 +344,6 @@ const copiarEndoint = (e) => {
           id="estado-input"
           list="estado"
           class="w-full p-2 rounded border"
-          autocomplete="off"
           v-model="selectedEstado"
           @change="cambioInputEstado"
           required
@@ -399,7 +428,6 @@ const copiarEndoint = (e) => {
           id="ciudad-input"
           list="ciudad"
           :placeholder="inputsDisable ? 'Servicio no disponible' : 'Ciudad'"
-          autocomplete="off"
           @change="cambioInputCiudad"
           class="w-full p-2 rounded border"
           v-model="selectedCiudad"
@@ -473,6 +501,7 @@ const copiarEndoint = (e) => {
           type="submit"
           class="btn btn-block btn-accent text-neutral"
           @click="emitirMostrarMapa"
+          :disabled="isButtonDisabled"
         >
           Consultar Info
         </button>
@@ -518,7 +547,10 @@ input {
   overflow: hidden;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 1s ease;
+  transition: all 0.1s ease;
+}
+.text-pre-request:active {
+  transform: scale(0.8);
 }
 .text-pre-request > svg {
   fill: #e5e5e5;
